@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHL Website Builder Mastery Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .progress-container {
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background-color: #3498db;
+            height: 20px;
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #3498db;
+            font-size: 18px;
+        }
+
+        .difficulty-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .foundational {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .intermediate {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .advanced {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .option:hover:not(.disabled) {
+            background-color: #e8f4f8;
+            border-color: #3498db;
+        }
+
+        .option-letter {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 25px;
+            height: 25px;
+            background-color: #ecf0f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .option.selected {
+            background-color: #e8f4f8;
+            border-color: #3498db;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .feedback-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .next-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+
+        .next-button:hover {
+            background-color: #2980b9;
+        }
+
+        .results-container {
+            text-align: center;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .score-breakdown {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .restart-button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background-color: #27ae60;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .option {
+                padding: 12px 15px;
+                padding-left: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Go High Level Website Builder Mastery Test</h1>
+        <p class="subtitle">Test your knowledge from Joanne's comprehensive training</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <span class="progress-text" id="progressText">0/25</span>
+            </div>
+        </div>
+
+        <div id="questionContainer"></div>
+        <div id="resultsContainer" class="results-container"></div>
+    </div>
+
+    <script>
+        const questions = [
+            // Foundational Questions (5 questions - 20%)
+            {
+                id: 1,
+                difficulty: "foundational",
+                question: "According to Joanne's house-building analogy, what do the different colors represent in the GHL website builder?",
+                options: [
+                    "Green = Elements, Blue = Rows, Pink = Columns, Orange = Sections",
+                    "Green = Sections, Blue = Rows, Pink = Columns, Orange = Elements",
+                    "Green = Rows, Blue = Sections, Pink = Elements, Orange = Columns",
+                    "Green = Columns, Blue = Elements, Pink = Sections, Orange = Rows"
+                ],
+                correct: 1,
+                explanation: "Joanne uses a house-building analogy where Green represents Sections (the framing/rooms), Blue represents Rows (the structure), Pink/Lilac represents Columns (subdivisions), and Orange represents Elements (the decorations/content). This hierarchy must be followed: Section → Row → Column → Element."
+            },
+            {
+                id: 2,
+                difficulty: "foundational",
+                question: "What is Joanne's golden rule that she repeats throughout the training?",
+                options: [
+                    "Save early, save often",
+                    "Mobile first, desktop second",
+                    "You must select it to affect it",
+                    "Test before you publish"
+                ],
+                correct: 2,
+                explanation: "Joanne's golden rule is 'You must select it to affect it!' She emphasizes this repeatedly because in GHL's builder, you must click on an element, section, row, or column to see and modify its settings in the right panel. This is fundamental to working efficiently in the platform."
+            },
+            {
+                id: 3,
+                difficulty: "foundational",
+                question: "What is the primary conceptual difference between a website and a funnel in GHL?",
+                options: [
+                    "Websites are cheaper to host than funnels",
+                    "Funnels have steps with one goal per step, websites have pages with multiple navigation options",
+                    "Websites can only be used for blogs, funnels for selling products",
+                    "Funnels support mobile optimization, websites do not"
+                ],
+                correct: 1,
+                explanation: "The fundamental difference is purpose and structure. Funnels guide visitors through sequential steps, each with ONE specific goal and no distracting navigation. Websites have multiple pages accessible through navigation menus, allowing visitors to explore freely. As Joanne explains, 'A funnel has one purpose, one call to action' per step."
+            },
+            {
+                id: 4,
+                difficulty: "foundational",
+                question: "Which platforms does Joanne specifically warn against using for business websites, and why?",
+                options: [
+                    "WordPress and Joomla - they're outdated",
+                    "Shopify and BigCommerce - they're too expensive",
+                    "Wix and Squarespace - they don't allow DNS record modifications",
+                    "Weebly and GoDaddy - they have poor customer support"
+                ],
+                correct: 2,
+                explanation: "Joanne specifically warns against Wix and Squarespace because they don't allow you to add DNS records needed for branded sending domains. As she explains: 'Wix doesn't allow you to add any records in their DNS... they try and hold on really tightly to make sure that you don't go anywhere else.'"
+            },
+            {
+                id: 5,
+                difficulty: "foundational",
+                question: "What file size and format does Joanne recommend for favicons?",
+                options: [
+                    "16x16 pixels, PNG format",
+                    "32x32 pixels, ICO format",
+                    "500x500 pixels or smaller",
+                    "1920x1080 pixels, JPG format"
+                ],
+                correct: 0,
+                explanation: "Joanne states that favicons are 'usually 16 by 16' pixels. She mentions that if your logo is 500x500, you should shrink it down and upload a file specifically for favicon usage. Favicons are the small icons that appear in browser tabs to represent your brand."
+            },
+
+            // Intermediate Questions (8 questions - 30%)
+            {
+                id: 6,
+                difficulty: "intermediate",
+                question: "When connecting a domain in GHL, what is the critical final step that many users miss?",
+                options: [
+                    "Verifying the SSL certificate",
+                    "Setting up email forwarding",
+                    "Going to Settings → Domains and selecting the default page",
+                    "Adding the WWW redirect record"
+                ],
+                correct: 2,
+                explanation: "After connecting a domain, you must go to Settings → Domains, select your website from the dropdown, and choose the default page (usually 'Home'). Without this step, visitors must type '/home' after your domain. Joanne emphasizes: 'A lot of people aren't aware of this last little step, and then they can't figure out why they get a 404 error.'"
+            },
+            {
+                id: 7,
+                difficulty: "intermediate",
+                question: "What is the conceptual purpose of using negative margin values in GHL's builder?",
+                options: [
+                    "To reduce page loading time",
+                    "To create overlapping effects between elements",
+                    "To improve mobile responsiveness",
+                    "To fix alignment issues in Internet Explorer"
+                ],
+                correct: 1,
+                explanation: "Negative margins create overlapping effects between elements. Joanne demonstrates this with the 'karate school' headline using -20px to overlap it with 'ROUNDHOUSE', and later with the staff section using -80px to pull instructor cards up into the black section. This technique isn't self-explanatory but enables sophisticated design effects."
+            },
+            {
+                id: 8,
+                difficulty: "intermediate",
+                question: "According to best practices, when should you start configuring mobile optimization in GHL?",
+                options: [
+                    "Before creating any desktop elements",
+                    "After completing and finalizing the desktop version",
+                    "Simultaneously with desktop development",
+                    "Only if mobile traffic exceeds 50%"
+                ],
+                correct: 1,
+                explanation: "Joanne strongly emphasizes completing the desktop version first before touching mobile settings. She warns: 'As soon as you start configuring things differently... it can get wonky and confusing.' The pages become partially disconnected when you start customizing mobile separately, making it much harder to manage."
+            },
+            {
+                id: 9,
+                difficulty: "intermediate",
+                question: "What is the relationship between custom values and dynamic content in GHL?",
+                options: [
+                    "Custom values are static and cannot be changed after creation",
+                    "Custom values act as dynamic placeholders that update everywhere when changed once",
+                    "Custom values only work in email templates, not websites",
+                    "Custom values require API access to modify"
+                ],
+                correct: 1,
+                explanation: "Custom values are dynamic placeholders that update everywhere they're used when changed in one location. Joanne explains: 'If you've got 25-50 forms that you've created... and you change phone numbers... come here and change it, and it magically changes it everywhere else.' This is crucial for maintaining consistency across large sites."
+            },
+            {
+                id: 10,
+                difficulty: "intermediate",
+                question: "What DNS record configuration is required when connecting a root domain (not subdomain) to GHL?",
+                options: [
+                    "Only a CNAME record pointing to sites.msgsndr.com",
+                    "An A record for @ and a CNAME record for WWW",
+                    "Only an A record pointing to 192.168.1.1",
+                    "Two CNAME records, one for @ and one for WWW"
+                ],
+                correct: 1,
+                explanation: "Root domains require two records: an A record with the @ symbol as host (pointing to GHL's IP address) and a CNAME record for WWW (pointing to sites.msgsndr.com or similar). Joanne shows this creates an automatic WWW redirect. These records 'don't conflict with each other' and ensure the domain works with and without WWW."
+            },
+            {
+                id: 11,
+                difficulty: "intermediate",
+                question: "How does the new Labs color picker feature conceptually improve the workflow?",
+                options: [
+                    "It automatically generates complementary colors",
+                    "It integrates brand board colors into the builder's color selection",
+                    "It allows importing colors from Adobe Creative Suite",
+                    "It provides accessibility ratings for color combinations"
+                ],
+                correct: 1,
+                explanation: "The Labs color picker creates a 'unified palette' that integrates your brand board colors directly into the builder. Joanne demonstrates how colors set up in the brand board appear in the color picker, calling it 'a lifesaver' and 'amazing' for maintaining brand consistency without creating custom colors repeatedly."
+            },
+            {
+                id: 12,
+                difficulty: "intermediate",
+                question: "What is the hierarchy of global section types from most to least shareable?",
+                options: [
+                    "Template → Global → Universal",
+                    "Universal → Global → Template",
+                    "Global → Universal → Template",
+                    "Universal → Template → Global"
+                ],
+                correct: 1,
+                explanation: "Universal sections (newest feature) can be shared across ALL websites and funnels in an account. Global sections share within a single website/funnel. Templates are just static copies with no synchronization. Joanne was excited about universal sections: 'That's new... that's fabulous... save it as an account level.'"
+            },
+            {
+                id: 13,
+                difficulty: "intermediate",
+                question: "In form compliance, what is the critical difference between marketing and transactional consent?",
+                options: [
+                    "Marketing requires double opt-in, transactional does not",
+                    "Marketing consent covers promotions, transactional covers order updates and appointments",
+                    "Marketing is for email only, transactional is for SMS only",
+                    "There is no practical difference in GHL"
+                ],
+                correct: 1,
+                explanation: "A2P 10DLC compliance requires separate consent for marketing messages (promotions, newsletters) versus transactional messages (appointment confirmations, order updates). Forms must have distinct checkboxes for each type. Joanne emphasizes this is 'critically important' for SMS compliance and approval."
+            },
+
+            // Advanced Questions (12 questions - 50%)
+            {
+                id: 14,
+                difficulty: "advanced",
+                question: "When troubleshooting a GHL page that displays correctly in the builder but shows layout issues when published, what is the most likely conceptual cause?",
+                options: [
+                    "The autosave feature is corrupting the page data",
+                    "Custom CSS in the header is conflicting with inline styles",
+                    "The page hasn't fully propagated to the CDN",
+                    "Browser cache is showing an older version"
+                ],
+                correct: 1,
+                explanation: "Layout discrepancies between builder and published views typically stem from custom CSS conflicts. GHL injects builder styles differently than published pages. Custom CSS in tracking codes or header/footer can override inline styles, causing unexpected behavior. This requires systematic debugging by removing custom code to identify conflicts."
+            },
+            {
+                id: 15,
+                difficulty: "advanced",
+                question: "What architectural limitation exists when attempting to share global sections between different GHL asset types?",
+                options: [
+                    "API rate limits prevent cross-asset synchronization",
+                    "Global sections cannot be shared between funnels and websites, even with universal sections",
+                    "The 30-day trial doesn't include cross-asset sharing",
+                    "Only agency plans support cross-asset global sections"
+                ],
+                correct: 1,
+                explanation: "Even with the new universal sections feature, GHL maintains architectural separation between asset types. You cannot share global sections between funnels and websites - they exist in separate containers. This is a platform limitation that affects complex multi-asset campaigns requiring manual duplication of sections."
+            },
+            {
+                id: 16,
+                difficulty: "advanced",
+                question: "In complex multi-location implementations, what is the primary technical challenge when managing 50+ locations?",
+                options: [
+                    "Database query timeouts when loading all locations",
+                    "Maintaining consistent branding while allowing location-specific customizations",
+                    "SSL certificate limits for subdomains",
+                    "Workflow automation becomes exponentially slower"
+                ],
+                correct: 1,
+                explanation: "The conceptual challenge in multi-location management is balancing standardization with customization. While GHL provides technical infrastructure for unlimited locations, the real complexity lies in creating systems that maintain brand consistency while allowing necessary location-specific variations in content, offers, and workflows."
+            },
+            {
+                id: 17,
+                difficulty: "advanced",
+                question: "When implementing custom JavaScript that works in preview but fails on published pages, what is the most sophisticated debugging approach?",
+                options: [
+                    "Add console.log statements throughout the code",
+                    "Check for hydration errors and asynchronous loading conflicts in the browser console",
+                    "Disable all browser extensions and retry",
+                    "Republish the page multiple times until it works"
+                ],
+                correct: 1,
+                explanation: "GHL uses client-side hydration for dynamic content. JavaScript that depends on DOM elements may execute before hydration completes, causing failures. Advanced debugging requires checking browser console for hydration errors, implementing proper event listeners for DOM ready states, and understanding GHL's asynchronous loading patterns."
+            },
+            {
+                id: 18,
+                difficulty: "advanced",
+                question: "What is the conceptual implication of GHL's move from simple landing pages to an 'AI Operating System'?",
+                options: [
+                    "Basic features will be deprecated in favor of AI-only tools",
+                    "The platform is evolving from a marketing tool to a comprehensive business automation ecosystem",
+                    "Human intervention will no longer be required for website building",
+                    "Pricing will increase dramatically to cover AI costs"
+                ],
+                correct: 1,
+                explanation: "GHL's evolution to an 'AI Operating System' represents a fundamental shift from point solutions to ecosystem thinking. Rather than just building pages, the platform now orchestrates entire business operations through AI-driven automation, integrated workflows, and intelligent decision-making across all customer touchpoints."
+            },
+            {
+                id: 19,
+                difficulty: "advanced",
+                question: "In webhook implementations between GHL and external systems, what is the most critical consideration for data integrity?",
+                options: [
+                    "Using GET requests instead of POST for better compatibility",
+                    "Implementing idempotency keys and retry logic for failed transmissions",
+                    "Limiting payload size to under 1MB",
+                    "Using synchronous calls instead of asynchronous"
+                ],
+                correct: 1,
+                explanation: "Webhook reliability requires sophisticated error handling. Idempotency keys prevent duplicate processing when webhooks retry failed transmissions. Without proper retry logic and idempotency, system inconsistencies accumulate over time. This is critical for payment processing, inventory management, and multi-system synchronization."
+            },
+            {
+                id: 20,
+                difficulty: "advanced",
+                question: "When form submissions show in GHL but don't trigger workflows, what systematic troubleshooting approach reveals the root cause?",
+                options: [
+                    "Check if the form is set to the wrong pipeline stage",
+                    "Verify workflow triggers, contact filters, and conditional logic in sequence",
+                    "Ensure the form has a confirmation page set",
+                    "Confirm the contact's email address is valid"
+                ],
+                correct: 1,
+                explanation: "Workflow failures require systematic debugging: First verify the trigger type matches the form submission, then check contact filters (tags, custom fields), examine conditional logic paths, and confirm action configurations. The issue often lies in overlooked filters or conditions rather than obvious connection problems."
+            },
+            {
+                id: 21,
+                difficulty: "advanced",
+                question: "What advanced CSS technique enables responsive typography without media queries in GHL custom code?",
+                options: [
+                    "Using em units based on parent container",
+                    "Implementing clamp() with viewport units for fluid scaling",
+                    "Setting font-size: auto for browser optimization",
+                    "Applying transform: scale() to text elements"
+                ],
+                correct: 1,
+                explanation: "The clamp() function with viewport units creates truly fluid typography: clamp(16px, 4vw, 24px) sets minimum, preferred, and maximum sizes. This advanced technique eliminates breakpoint-dependent typography, creating smooth scaling across all device sizes - particularly valuable given GHL's limited breakpoint control."
+            },
+            {
+                id: 22,
+                difficulty: "advanced",
+                question: "In A2P 10DLC compliance, what triggers the manual vetting process and significantly delays approval?",
+                options: [
+                    "Sending more than 100 messages per day",
+                    "Mismatched business information between EIN records and GHL profile",
+                    "Using toll-free numbers instead of local numbers",
+                    "Including links in SMS messages"
+                ],
+                correct: 1,
+                explanation: "A2P 10DLC uses automated verification against official business records. Mismatches between your EIN registration, domain ownership, and GHL business profile trigger manual review, extending approval from days to weeks. Joanne emphasized ensuring 'everything needs to match your business setup' to avoid this costly delay."
+            },
+            {
+                id: 23,
+                difficulty: "advanced",
+                question: "What is the architectural reason GHL requires at least one section, row, and column before adding any element?",
+                options: [
+                    "To maintain consistent CSS cascade and inheritance patterns",
+                    "To comply with WCAG accessibility standards",
+                    "To prevent database corruption from orphaned elements",
+                    "To ensure proper responsive behavior on mobile devices"
+                ],
+                correct: 0,
+                explanation: "GHL's hierarchical structure ensures predictable CSS cascade and inheritance. Sections establish block-level formatting contexts, rows create flex containers for layout, and columns provide item-level control. This architecture prevents styling conflicts and ensures consistent behavior across different viewport sizes and rendering engines."
+            },
+            {
+                id: 24,
+                difficulty: "advanced",
+                question: "When implementing multi-step conditional workflows with parallel paths, what is the primary performance consideration at scale?",
+                options: [
+                    "Each condition check adds 100ms latency",
+                    "Parallel paths can create race conditions in contact record updates",
+                    "Workflows are limited to 50 active instances",
+                    "Complex logic increases monthly automation charges"
+                ],
+                correct: 1,
+                explanation: "Parallel workflow paths can simultaneously modify contact records, creating race conditions where updates overwrite each other. At scale, this causes data inconsistency. Best practice requires sequential processing for critical updates or implementing mutex-like patterns using tags to prevent concurrent modifications of the same contact."
+            },
+            {
+                id: 25,
+                difficulty: "advanced",
+                question: "What is the most sophisticated approach to implementing dark mode in GHL custom CSS without breaking the builder interface?",
+                options: [
+                    "Using !important flags on all dark mode styles",
+                    "Implementing :root CSS variables with prefers-color-scheme media queries",
+                    "Creating duplicate pages for light and dark versions",
+                    "Using JavaScript to toggle class names on body element"
+                ],
+                correct: 1,
+                explanation: "CSS custom properties (variables) with prefers-color-scheme creates system-aware dark mode that respects user preferences. Using :root variables allows theme switching without JavaScript, maintains builder compatibility, and provides graceful fallbacks. This approach avoids specificity conflicts that break GHL's builder preview."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answers = [];
+
+        function initializeQuiz() {
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question-container">
+                    <div class="question-header">
+                        <span class="question-number">Question ${currentQuestionIndex + 1} of ${questions.length}</span>
+                        <span class="difficulty-badge ${question.difficulty}">${question.difficulty}</span>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectAnswer(${index})">
+                                <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                    <button id="nextButton" class="next-button" onclick="nextQuestion()">Next Question</button>
+                </div>
+            `;
+
+            updateProgressBar();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            const nextButton = document.getElementById('nextButton');
+            
+            // Disable all options
+            options.forEach(option => option.classList.add('disabled'));
+            
+            // Mark selected answer
+            options[selectedIndex].classList.add('selected');
+            
+            // Show correct/incorrect
+            if (selectedIndex === question.correct) {
+                options[selectedIndex].classList.add('correct');
+                score++;
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `
+                    <div class="feedback-header">
+                        <span>✓</span> Correct!
+                    </div>
+                    <div>${question.explanation}</div>
+                `;
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `
+                    <div class="feedback-header">
+                        <span>✗</span> Incorrect
+                    </div>
+                    <div>${question.explanation}</div>
+                `;
+            }
+            
+            // Store answer
+            answers.push({
+                questionId: question.id,
+                selected: selectedIndex,
+                correct: selectedIndex === question.correct
+            });
+            
+            // Show feedback and next button
+            feedback.style.display = 'block';
+            nextButton.style.display = 'block';
+            
+            // Disable clicking on options
+            options.forEach(option => {
+                option.onclick = null;
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+        }
+
+        function showResults() {
+            const container = document.getElementById('questionContainer');
+            container.style.display = 'none';
+            
+            const resultsContainer = document.getElementById('resultsContainer');
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            const foundationalCorrect = answers.filter((a, i) => questions[i].difficulty === 'foundational' && a.correct).length;
+            const intermediateCorrect = answers.filter((a, i) => questions[i].difficulty === 'intermediate' && a.correct).length;
+            const advancedCorrect = answers.filter((a, i) => questions[i].difficulty === 'advanced' && a.correct).length;
+            
+            resultsContainer.innerHTML = `
+                <h2>Test Complete!</h2>
+                <div class="score-display">${score} / ${questions.length}</div>
+                <p style="font-size: 24px; color: #7f8c8d; margin-bottom: 30px;">${percentage}%</p>
+                
+                <div class="score-breakdown">
+                    <h3 style="margin-bottom: 15px;">Score Breakdown by Difficulty</h3>
+                    <div class="breakdown-item">
+                        <span>Foundational (${foundationalCorrect}/5)</span>
+                        <span>${Math.round((foundationalCorrect / 5) * 100)}%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Intermediate (${intermediateCorrect}/8)</span>
+                        <span>${Math.round((intermediateCorrect / 8) * 100)}%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Advanced (${advancedCorrect}/12)</span>
+                        <span>${Math.round((advancedCorrect / 12) * 100)}%</span>
+                    </div>
+                </div>
+                
+                <button class="restart-button" onclick="restartQuiz()">Retake Test</button>
+            `;
+            
+            resultsContainer.style.display = 'block';
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answers = [];
+            
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('questionContainer').style.display = 'block';
+            
+            showQuestion();
+        }
+
+        // Initialize quiz on page load
+        window.onload = initializeQuiz;
+    </script>
+</body>
+</html>
